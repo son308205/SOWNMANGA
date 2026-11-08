@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f5f0">
+  <title>SOWNMANGA — Quản lý cửa hàng truyện tranh</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">✦</div>
+        <div class="brand-copy"><div class="brand-name">SOWNMANGA</div><div class="brand-caption">Không gian dành cho người mê truyện</div></div>
+        <button class="auth-toggle" id="auth-toggle" type="button">Đăng nhập</button>
+      </div>
+      <p class="nav-label">MENU CHÍNH</p>
+      <nav class="nav-list" id="navigation">
+        <button class="nav-link auth-only" data-view="dashboard"><span class="nav-icon">▦</span>Tổng quan</button>
+        <button class="nav-link" data-view="catalog"><span class="nav-icon">▤</span>Kho truyện <span class="nav-count" id="nav-book-count">08</span></button>
+        <button class="nav-link auth-only" data-view="orders"><span class="nav-icon">▧</span>Đơn hàng <span class="nav-count" id="nav-order-count">3</span></button>
+        <button class="nav-link" data-view="cart"><span class="nav-icon">🛒</span>Giỏ hàng <span class="nav-count" id="nav-cart-count">0</span></button>
+        <button class="nav-link staff-only hidden" data-view="inventory"><span class="nav-icon">📦</span>Nhập kho</button>
+        <button class="nav-link staff-only hidden" data-view="reports"><span class="nav-icon">▥</span>Báo cáo</button>
+        <button class="nav-link staff-only admin-only hidden" data-view="employees"><span class="nav-icon">♙</span>Nhân viên</button>
+        <button class="nav-link staff-only admin-only hidden" data-view="customers"><span class="nav-icon">♧</span>Khách hàng</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card">
+          <strong>Góc đọc hôm nay 🍵</strong>
+          <p>Mỗi trang truyện là một chuyến phiêu lưu mới.</p>
+          <button type="button" data-view-link="catalog">Khám phá truyện →</button>
+        </div>
+        <div class="profile">
+          <div class="avatar" id="profile-avatar">M</div>
+          <div style="min-width:0"><div class="profile-name" id="profile-name">Trần Anh Sơn</div><div class="profile-role" id="profile-role">Quản trị viên</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="mobile-menu" type="button" aria-label="Mở menu">☰</button>
+        <div class="breadcrumb">Cửa hàng <span style="margin:0 7px;color:#c7c5bb">/</span> <strong id="breadcrumb-title">Tổng quan</strong></div>
+        <div class="top-actions">
+          <label class="search-wrap"><span>⌕</span><input class="search" id="search-input" type="search" placeholder="Tìm tên truyện, tác giả..."></label>
+          <button class="icon-button" id="notification-button" type="button" aria-label="Thông báo">♧<i class="notification-dot"></i></button>
+        </div>
+      </header>
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <form class="modal" id="login-form">
+      <div class="brand" style="padding:0;margin:0 0 22px"><div class="brand-mark">✦</div><div><div class="brand-name">SOWNMANGA</div><div class="brand-caption">Đăng nhập vào cửa hàng</div></div></div>
+      <h2 id="login-title">Chào mừng bạn trở lại</h2>
+      <p class="modal-intro">Đăng nhập bằng tài khoản quản trị viên, nhân viên hoặc khách hàng.</p>
+      <label class="field-label" for="email">Email</label>
+      <input class="field" id="email" name="email" type="email" autocomplete="username" placeholder="ban@example.com" required>
+      <label class="field-label" for="password">Mật khẩu</label>
+      <input class="field" id="password" name="password" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu" required>
+      <p class="login-error hidden" id="login-error" style="margin:9px 0 0;color:#b94d43;font-size:11px"></p>
+      <div class="modal-actions"><button class="primary-button" type="submit" style="width:100%">Đăng nhập <span>→</span></button></div>
+      <button class="account-switch" id="open-register" type="button">Chưa có tài khoản? <strong>Đăng ký</strong></button>
+      <button class="guest-continue" id="continue-guest" type="button">Tiếp tục tham quan cửa hàng</button>
+      <div class="demo-accounts">
+        <div class="demo-title">Tài khoản dùng thử · Chọn để điền nhanh</div>
+        <div id="demo-account-list"></div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-backdrop hidden" id="register-modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
+    <form class="modal" id="register-form">
+      <div class="brand" style="padding:0;margin:0 0 22px"><div class="brand-mark">✦</div><div><div class="brand-name">SOWNMANGA</div><div class="brand-caption">Tạo tài khoản khách hàng</div></div></div>
+      <h2 id="register-title">Đăng ký tài khoản</h2>
+      <p class="modal-intro">Tạo tài khoản để đặt mua truyện và theo dõi đơn hàng.</p>
+      <label class="field-label" for="register-name">Họ và tên</label>
+      <input class="field" id="register-name" name="name" autocomplete="name" required minlength="2" placeholder="Nguyễn Văn A">
+      <label class="field-label" for="register-email">Email</label>
+      <input class="field" id="register-email" name="email" type="email" autocomplete="email" required placeholder="ban@example.com">
+      <label class="field-label" for="register-password">Mật khẩu</label>
+      <input class="field" id="register-password" name="password" type="password" autocomplete="new-password" required minlength="6" placeholder="Ít nhất 6 ký tự">
+      <label class="field-label" for="register-password-confirm">Nhập lại mật khẩu</label>
+      <input class="field" id="register-password-confirm" name="password-confirm" type="password" autocomplete="new-password" required minlength="6" placeholder="Nhập lại mật khẩu">
+      <p class="login-error hidden" id="register-error" style="margin:9px 0 0;color:#b94d43;font-size:11px"></p>
+      <div class="modal-actions"><button class="primary-button" type="submit" style="width:100%">Tạo tài khoản</button></div>
+      <button class="account-switch" id="back-to-login" type="button">Đã có tài khoản? <strong>Đăng nhập</strong></button>
+    </form>
+  </div>
+  <div class="modal-backdrop hidden" id="book-modal" role="dialog" aria-modal="true" aria-labelledby="book-modal-title">
+    <form class="modal" id="book-form">
+      <h2 id="book-modal-title">Thêm truyện mới</h2>
+      <p class="modal-intro">Bổ sung hoặc cập nhật đầu truyện trong danh mục.</p>
+      <input id="edit-book-code" type="hidden">
+      <label class="field-label" for="new-title">Tên truyện</label><input class="field" id="new-title" required placeholder="Ví dụ: Hành trình của gió">
+      <label class="field-label" for="new-author">Tác giả</label><input class="field" id="new-author" required placeholder="Tên tác giả">
+      <label class="field-label" for="new-category">Thể loại</label><input class="field" id="new-category" required placeholder="Ví dụ: Phiêu lưu">
+      <label class="field-label" for="new-price">Giá bán (đ)</label><input class="field" id="new-price" type="number" min="0" step="1000" required placeholder="45000">
+      <label class="field-label" for="new-stock">Số lượng tồn kho</label><input class="field" id="new-stock" type="number" min="0" required placeholder="10">
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close-book>Hủy</button><button class="primary-button" id="save-book-button" type="submit">Thêm vào kho</button></div>
+    </form>
+  </div>
+  <div class="toast hidden" id="toast" role="status"></div>
+
+  <script src="./app-data.js"></script>
+  <script src="./app-business.js"></script>
+  <script src="./app-presentation.js"></script>
+
+</body>
+</html>
